@@ -47,6 +47,10 @@ export async function launchEditor(path, editor, tips) {
     p.on("exit", resolve);
   });
 
+  // Rolling back the printed info
+  process.stdout.moveCursor(0, -(1 + tips.length));
+  process.stdout.clearScreenDown();
+
   return fs.readFile(path, { encoding: "utf8" }).catch(() => {
     throw new Error(`could not read file '${path}'`);
   });
