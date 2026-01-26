@@ -1,6 +1,6 @@
 {
   "name": "edit-like-git",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A NodeJS library to launch editor like Git does.",
   "author": "uss-stargazer",
   "license": "ISC",

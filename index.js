@@ -28,16 +28,20 @@ async function guessEditor() {
   return editor;
 }
 
-export async function launchEditor(path, editor, tips) {
+export async function launchEditor(path, editor, printInfo) {
   if (!editor) editor = await guessEditor();
   path = resolve(path);
 
   // Just some info
-  tips.forEach((tip) => console.log(chalk.blue("#    "), tip));
-  console.log(
-    chalk.yellow("hint:"),
-    "Waiting for your editor to close the file...",
-  );
+  const printTips = typeof printInfo === "object";
+  if (printInfo !== "none") {
+    if (printTips)
+      printInfo.forEach((tip) => console.log(chalk.blue("# "), tip));
+    console.log(
+      chalk.yellow("hint:"),
+      "Waiting for your editor to close the file...",
+    );
+  }
 
   await new Promise((resolve, reject) => {
     const p = spawn(`${editor} "${path}"`, { shell: true, stdio: "inherit" });
@@ -48,21 +52,28 @@ export async function launchEditor(path, editor, tips) {
   });
 
   // Rolling back the printed info
-  process.stdout.moveCursor(0, -(1 + tips.length));
-  process.stdout.clearScreenDown();
+  if (printTips) {
+    process.stdout.moveCursor(0, -(1 + printInfo.length));
+    process.stdout.clearScreenDown();
+  }
 
   return fs.readFile(path, { encoding: "utf8" }).catch(() => {
     throw new Error(`could not read file '${path}'`);
   });
 }
 
-export async function editInteractively(path, initialContents, editor, tips) {
+export async function editInteractively(
+  path,
+  initialContents,
+  editor,
+  printInfo,
+) {
   path = resolve(path);
   await fs.writeFile(path, initialContents, { encoding: "utf8" }).catch(() => {
     throw new Error(`could not open '${path}' for writing`);
   });
 
-  return await launchEditor(path, editor, tips).catch(() => {
+  return await launchEditor(path, editor, printInfo).catch(() => {
     throw new Error(`could not edit '${path}'`);
   });
 }

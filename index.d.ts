@@ -10,7 +10,7 @@
 export declare function launchEditor(
   path: string,
   editor?: string,
-  tips?: string[],
+  printInfo?: "none" | string[],
 ): Promise<string>;
 
 /**
@@ -28,5 +28,5 @@ export declare function editInteractively(
   path: string,
   initialContents: string,
   editor?: string,
-  tips?: string[],
+  printInfo?: "none" | string[],
 ): Promise<string>;
