@@ -73,7 +73,7 @@ export async function editInteractively(
     throw new Error(`could not open '${path}' for writing`);
   });
 
-  return await launchEditor(path, editor, printInfo).catch(() => {
-    throw new Error(`could not edit '${path}'`);
+  return await launchEditor(path, editor, printInfo).catch((error) => {
+    throw new Error(`could not edit '${path}': ${error}`);
   });
 }
